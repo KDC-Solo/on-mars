@@ -1,54 +1,59 @@
-# Solo Deck Catalogue (work in progress)
+# Solo Deck Catalogue — COMPLETE
 
-Catalogued from photos of the physical cards (`docs/images/`, local only, 2026-07-03).
-The deck has **12 cards: 4 labeled "A" and 8 labeled "B"**.
+Catalogued 2026-07-03 from photos of the physical cards (`docs/images/`, local only) and
+cross-checked against the Rulebook (pp. 22–23) and its component list ("12 Solo cards").
 
-> ⚠️ **Discrepancy with the preview rulebook.** The preview rulebook (pp. 22–23) describes
-> solo cards showing an astronaut action number (1–3), an optional "X next to the cube"
-> (Shuttle-phase no-travel marker), and a Mission tracker cube. The photographed faces show
-> none of these — they show an A/B letter plus icons. Either these photos show only one face
-> of double-sided cards, or the shipped solo system was revised after the preview rulebook.
-> **Unresolved — see Open Questions.**
+> ✅ **The PRD's blocking data dependency is resolved.** An earlier version of this file
+> mistook the 12 teal "A/B" cards for the solo deck — those are actually the **First
+> Colonist cards** (beginner variant, see `card-database.md`). The real solo card faces
+> match the rulebook exactly.
 
-## "B" cards (8)
+## Card anatomy
 
-Each face shows a letter "B", a top icon (action?) and a bottom icon (mission/LSS marker?).
+Each solo card front shows three fields:
 
-| # | Top icon (tentative reading) | Bottom icon (tentative reading) |
-|---|---|---|
-| B1 | Tech tile chip in hexagon → *Learn New Technology?* | Battery → *Power* |
-| B2 | Rocket/shuttle | Green leaf → *Plant* |
-| B3 | Shelter with red down-arrow → *build/place Shelter?* | Dark faceted wheel → *Bot?* |
-| B4 | Person with molecule → *Hire a Scientist?* | Faceted wheel (teal variant) → *Bot?* |
-| B5 | Chip with two red arrows to hexes → *R&D / develop Tech ×2?* | Gray waves → *Water or Air* |
-| B6 | Dark circle: chip ×2 with an "X" → *negated/alternate R&D?* | Gray waves → *Water or Air* |
-| B7 | Radar dish → *Exploration / place Discovery tile?* | Dark pyramid → *Mineral* |
-| B8 | Blueprint printer → *Obtain Blueprint?* | Dark pyramid → *Mineral* |
+1. **Mission letter** (red circle: A, B, or C) — after the first reshuffle of the deck,
+   move this Mission's tracker cube down one space (Lacerda gains Crystals as usual).
+2. **Travel marker** — a cube with either an arrow (Lacerda travels with the Shuttle in
+   the Shuttle phase) or a red **✗** (he does not travel). Rulebook: "Lacerda always
+   chooses to travel with the Shuttle unless the most recent solo card depicts an X next
+   to the cube."
+3. **Astronaut action number** (1–3) — which numbered action Lacerda takes on his turn
+   (Orbit side: 1 Obtain Blueprint, 2 Learn New Technology, 3 R&D; Colony side:
+   1 Construct a Building, 2 Upgrade a Building, 3 Hire Scientist / Take Contract).
 
-## "A" cards (4)
+## The 12 cards
 
-Each face shows a letter "A", a 2×2 grid of quadrants — each quadrant a resource icon above
-a white action-slot hex with a red down-arrow — and two small "B"-back cards at the bottom
-(possibly "add/draw 2 B cards"?).
+| # | Mission | Travel | Action |
+|---|---------|--------|--------|
+| 1 | A | yes | 2 |
+| 2 | A | **✗ no** | 2 |
+| 3 | A | yes | 1 |
+| 4 | A | yes | 3 |
+| 5 | B | yes | 1 |
+| 6 | B | **✗ no** | 3 |
+| 7 | B | yes | 1 |
+| 8 | B | yes | 2 |
+| 9 | C | **✗ no** | 1 |
+| 10 | C | yes | 2 |
+| 11 | C | yes | 1 |
+| 12 | C | yes | 3 |
 
-| # | Quadrants (TL, TR, BL, BR) |
-|---|---|
-| A1 | Battery · Blue drop/flame · Green leaf · Dark wheel |
-| A2 | Blue drop/flame · Green leaf · Gray waves · Dark wheel |
-| A3 | Green leaf · Gray waves · Battery · Dark wheel |
-| A4 | Gray waves · Battery · Blue drop/flame · Dark wheel |
+*(Numbering is arbitrary — cards within the deck are distinguished only by their field values.)*
 
-Pattern: the dark faceted wheel appears in the bottom-right of every A card; the other three
-quadrants rotate through {Battery, Blue drop/flame, Green leaf, Gray waves}, each A card
-omitting one of the four.
+## Distribution properties (useful for the app's RNG and for verification)
 
-## Open questions (blocking for the turn engine)
+- 4 cards per Mission letter (A, B, C).
+- Exactly one "no travel" (✗) card per Mission letter — 3 of 12 cards overall.
+- Action distribution: five 1s, four 2s, three 3s.
+- Per-letter action spread: A = {1, 2, 2, 3}; B = {1, 1, 2, 3}; C = {1, 1, 2, 3}.
 
-1. **Do the cards have a second face** with the astronaut action number, the X/cube travel
-   marker, and the Mission cube shown in the preview rulebook? If so, both faces must be
-   catalogued and paired.
-2. If not, the shipped solo rules differ from the preview rulebook — we need the **final
-   printed rulebook's solo pages** (the preview PDF is dated 4/27/20).
-3. Confirm icon identities against the final rulebook's icon glossary (blue drop/flame vs.
-   gray waves: which is Water and which is Air/Oxygen; whether the dark faceted wheel is
-   the Bot).
+## Engine notes
+
+- Deck: 12 cards, drawn without replacement; reshuffle discards when empty. From the
+  second pass onward, each reveal also moves the card's Mission cube down one space.
+- The "most recent solo card" governs the Shuttle-phase travel decision — the app must
+  retain the last revealed card across phases.
+- Ambiguity resolution ("number the options, draw until a number shows, then reshuffle")
+  uses this same deck; the app can simulate it with correct odds without disturbing the
+  main deck sequence, since the procedure ends with a full reshuffle.

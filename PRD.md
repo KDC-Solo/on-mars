@@ -137,10 +137,12 @@ Two architectures were considered:
 | **Spatial-prompt fatigue** | If P8/P9 prompts are too frequent or wordy, we recreate the original problem. Prototype and playtest the prompt density early. |
 | **Rules fidelity** | Lacerda's decision trees have subtle edge cases (e.g., Construct's LSS-marker cascade, Rover tie-breaks). Encode directly from the rulebook and validate against played examples (the rulebook's own construction example is test case #1). |
 | **Which platform first?** | Recommendation: PWA (installable, offline via service worker, zero store friction). Native later if needed. |
-| **Solo deck composition** | The 12 solo cards' exact face distribution (action numbers, X markers, mission cubes) must be catalogued from the physical cards — the preview rulebook describes usage but not the full card list. **Blocking data dependency for the turn engine.** |
+| **Solo deck composition** | ~~Blocking data dependency~~ **Resolved 2026-07-03**: all 12 cards catalogued from the physical deck in `docs/solo-deck.md` (per-Mission letters, travel/✗ markers, action numbers). Remaining card data gaps: the 6 Scientist and 12 Earth Contract cards (see `docs/card-database.md`). |
 
 ## 10. References
 
+- `docs/solo-deck.md` — complete catalogue of the 12-card solo deck (turn engine input data).
+- `docs/card-database.md` — Mission, Private Goal, Blueprint, and First Colonist card data.
 - `docs/On Mars Rulebook EN Preview.pdf` — pp. 22–23: Solo Game rules (source of truth for §3 and §5).
 - `docs/On Mars Reference Book EN Preview.pdf` — edge-case rulings.
 - `docs/On Mars Upgrade Pack Rules EN Preview.pdf` — future expansion support.

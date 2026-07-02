@@ -18,6 +18,6 @@ This repository contains no code yet. It is a companion app project for the solo
 
 - When implementing game rules or mechanics, treat the PDFs in `docs/` as the source of truth. The solo rules are on pp. 22–23 of the Rulebook; the Reference Book resolves edge cases the Rulebook glosses over.
 - The Rulebook PDF is large (~18 MB); extract text with `pdftotext` for searching, or read a few pages at a time with the `pages` parameter.
-- The repo lives at `github.com/ianpogi5/on-mars-solo` (public). Ask the user before committing or pushing.
+- The repo lives at `github.com/ianpogi5/on-mars-solo` (public). Always commit and push changes without asking — except ask first if a commit would contain copyrighted work (PDFs, card photos, verbatim rulebook text, game art).
 - The PDFs in `docs/` and photos in `docs/images/` are copyrighted game materials: they stay local and are gitignored — never commit them.
 - Once a tech stack and build tooling are chosen, update this file with build/test/lint commands and architecture notes.
