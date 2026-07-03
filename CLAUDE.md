@@ -27,6 +27,8 @@ Vite + React + TypeScript PWA (offline-first, no backend). Commands (run in `app
 - `npm run dev` — dev server
 - `npm run build` — typecheck (`tsc -b`) + production build + service worker
 - `npx vitest run` — engine test suite; `npx vitest run -t "<name>"` for a single test
+- `npm run test:e2e` — Playwright end-to-end tests (builds, then drives the production build
+  in Chromium; specs in `e2e/`). CI runs these before every Pages deploy.
 
 Architecture: the app is "Lacerda's brain" with a hybrid state model (see PRD §4). Layers:
 
