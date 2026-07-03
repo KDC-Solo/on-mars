@@ -159,8 +159,9 @@ export function actionSteps(lacerda: LacerdaState, action: ActionNumber): Step[]
         {
           text:
             'Take an Earth Contract: Lacerda already has 2 Scientists, so he takes the Contract worth the ' +
-            'most OP. It counts as automatically completed. Then shuffle the Contract deck and refill the ' +
-            'display with the top card. Enter the Contract’s OP value in the app.',
+            'most OP — an Upgrade contract (12 OP) if any is in the display, otherwise a Deliver contract ' +
+            '(9 OP). It counts as automatically completed. Then shuffle the Contract deck and refill the ' +
+            'display with the top card. Record the taken type in the app.',
         },
       ]
     }

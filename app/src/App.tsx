@@ -259,13 +259,15 @@ export default function App() {
 
         {dialog === 'record-contract' && (
           <>
-            <h2>Contract OP value?</h2>
+            <h2>Which Contract type did Lacerda take?</h2>
+            <p className="hint">He always prefers the higher OP: Upgrade (12) over Deliver (9).</p>
             <div className="actions">
-              {[7, 8, 9, 10, 11, 12].map((op) => (
-                <button key={op} className="big" onClick={() => applyAndClose(recordContract(g, op))}>
-                  {op}
-                </button>
-              ))}
+              <button className="big" onClick={() => applyAndClose(recordContract(g, 12))}>
+                Upgrade (12 OP)
+              </button>
+              <button className="big" onClick={() => applyAndClose(recordContract(g, 9))}>
+                Deliver (9 OP)
+              </button>
             </div>
           </>
         )}

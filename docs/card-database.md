@@ -105,19 +105,25 @@ The teal cards initially mistaken for the solo deck. Beginner variant ("First Co
 Solo relevance: none directly (variant is for multiplayer first games), but worth data-basing
 if the app later adds a "first game" mode.
 
-## Earth Contract cards (12) ❌ — the last data gap
+## Earth Contract cards (12) ⚠️ — structure confirmed, per-card details partial
 
 Per the Reference Book there are 2 types (6 of each, numbered — the solo rules cite
 "the Delivery Contract with Plants and Minerals (#11)"):
 
-- **Upgrade contracts:** 12 OP at game end if you have an Advanced Building marker on a
-  Complex of the depicted type of size ≥ 4; otherwise −6 OP.
-- **Deliver contracts:** place the depicted Resources on the card (permanent, exempt from
-  storage limits); 9 OP if complete at game end, otherwise −4 OP. Minerals can't substitute.
+- **Upgrade contracts (6):** 12 OP at game end if you have an Advanced Building marker on a
+  Complex of the depicted type of size ≥ 4; otherwise −6 OP. One per building type
+  (sighted in the Dice Tower unboxing video, ~9:55–10:05: Water Extractor and Greenhouse
+  size-4 complexes with the "12" OP band).
+- **Deliver contracts (6):** place the depicted Resources on the card (permanent, exempt
+  from storage limits); 9 OP if complete at game end, otherwise −4 OP. Minerals can't
+  substitute. Sighted mixes include "2 Crystals + …" and "3 Air/Water + Crystal" (dark
+  purple faces; too fast in the video to read fully).
 
-Per-card contents (which building type / which resource mix, and each card's number) are
-**not published anywhere findable online** (checked: official EGG downloads = same preview
-PDFs, UltraBoardGames, BGG threads/galleries). → Photograph the 12 physical cards.
+**Engine impact — resolved:** Lacerda's contracts auto-complete and he "takes the one worth
+the most OP", so the solo engine only needs the *type/OP* (Upgrade 12 beats Deliver 9),
+never the card contents. The player reads their own contracts off the physical cards.
+Full per-card mixes/numbering remain nice-to-have for a card browser — photograph the 6
+Deliver cards if we ever want that.
 
-Solo relevance: Lacerda "takes the Contract worth the most OP" and auto-completes it, so
-the engine needs at least each card's number, type, and OP value.
+Source: [Dice Tower "On Mars - Daily Game Unboxing"](https://www.youtube.com/watch?v=_ytq0lvCy88)
+(cards riffled ~9:45–10:05), cross-checked with Reference Book p. 3.
