@@ -133,6 +133,8 @@ footer .footer-meta a {
   flex-direction: column;
   gap: 0.35rem;
   color: var(--dim);
+  max-height: 45vh;
+  overflow-y: auto;
 }
 
 .log b {

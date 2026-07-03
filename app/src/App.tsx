@@ -336,16 +336,13 @@ export default function App() {
             <li key={r}>{r}</li>
           ))}
         </ul>
-        <h3>Log</h3>
+        <h3>Action history ({g.log.length})</h3>
         <ul className="log">
-          {[...g.log]
-            .reverse()
-            .slice(0, 30)
-            .map((e, i) => (
-              <li key={i}>
-                <b>T{e.turn}</b> {e.text}
-              </li>
-            ))}
+          {[...g.log].reverse().map((e, i) => (
+            <li key={g.log.length - i}>
+              <b>T{e.turn}</b> {e.text}
+            </li>
+          ))}
         </ul>
       </aside>
 
