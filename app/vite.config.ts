@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Served from https://ianpogi5.github.io/on-mars-solo/
+  base: '/on-mars-solo/',
   plugins: [
     react(),
     VitePWA({
@@ -15,6 +17,8 @@ export default defineConfig({
         theme_color: '#b23a2f',
         background_color: '#14100e',
         display: 'standalone',
+        start_url: '/on-mars-solo/',
+        scope: '/on-mars-solo/',
         icons: [],
       },
     }),
