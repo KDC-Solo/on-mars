@@ -17,6 +17,7 @@ import {
   recordConstruction,
   serialize,
   shuttlePhase,
+  toggleGoalRequirement,
 } from './game'
 
 describe('card data integrity', () => {
@@ -192,5 +193,18 @@ describe('game flow', () => {
   it('serialization round-trips', () => {
     const g = beginLacerdaTurn(newGame(config), 1).state
     expect(deserialize(serialize(g))).toEqual(g)
+  })
+
+  it('goal checklist toggles persist and default for old saves', () => {
+    let g = newGame(config)
+    g = toggleGoalRequirement(g, 2)
+    expect(g.goalChecked[2]).toBe(true)
+    expect(deserialize(serialize(g)).goalChecked[2]).toBe(true)
+    g = toggleGoalRequirement(g, 2)
+    expect(g.goalChecked[2]).toBe(false)
+
+    const legacy = JSON.parse(serialize(newGame(config))) as Record<string, unknown>
+    delete legacy.goalChecked
+    expect(deserialize(JSON.stringify(legacy)).goalChecked).toEqual([])
   })
 })

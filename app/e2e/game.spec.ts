@@ -74,10 +74,16 @@ test('full solo game flow: setup, turns, records, phases, undo, resume', async (
   await expect(header).toContainText('Bots 1')
   await finishTurn(page)
 
-  // Autosave: a reload resumes mid-game with state intact.
+  // Tick a Solo Goal requirement on the interactive checklist.
+  const firstReq = page.locator('.goal input[type="checkbox"]').first()
+  await firstReq.check()
+  await expect(firstReq).toBeChecked()
+
+  // Autosave: a reload resumes mid-game with state (and ticks) intact.
   await page.reload()
   await expect(header).toContainText('Colony L2')
   await expect(header).toContainText('Scientists 1')
+  await expect(page.locator('.goal input[type="checkbox"]').first()).toBeChecked()
   await expect(page.getByRole('heading', { name: 'On Mars Solo — Setup' })).toHaveCount(0)
 })
 

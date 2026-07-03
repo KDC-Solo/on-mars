@@ -5,7 +5,7 @@
     'header header'
     'main aside'
     'footer footer';
-  gap: 0.75rem;
+  gap: 0.8rem;
 }
 
 @media (max-width: 800px) {
@@ -15,76 +15,126 @@
   }
 }
 
+/* --- brand --- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hexlogo {
+  width: 26px;
+  height: 26px;
+  color: var(--teal);
+  filter: drop-shadow(0 0 6px rgba(63, 201, 185, 0.5));
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: 0.22em;
+}
+
+.brand-sub {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  color: var(--teal);
+  border: 1px solid var(--teal-dim);
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  transform: translateY(1px);
+}
+
+/* --- HUD panels --- */
+.panel {
+  position: relative;
+  background: linear-gradient(168deg, var(--panel-hi), var(--panel-lo));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14px;
+  right: 14px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(63, 201, 185, 0.55), transparent);
+}
+
+/* --- header console strip --- */
 header {
   grid-area: header;
+  position: sticky;
+  top: 0.5rem;
+  z-index: 5;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.6rem 0.9rem;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  gap: 0.45rem;
+  padding: 0.65rem 0.9rem;
+  background: linear-gradient(168deg, rgba(30, 26, 48, 0.96), rgba(17, 15, 30, 0.96));
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
-header .dim {
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chip {
+  font-size: 0.86rem;
+  font-weight: 600;
   color: var(--dim);
-  font-size: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.14rem 0.6rem;
+  background: rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
 }
 
+.chip b {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+.chip.primary {
+  color: var(--ink);
+  border-color: var(--teal-dim);
+}
+
+.chip.primary b {
+  color: var(--teal);
+}
+
+/* --- main console --- */
 main {
   grid-area: main;
 }
+
 aside {
   grid-area: aside;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  align-self: start;
 }
+
 footer {
   grid-area: footer;
   text-align: center;
   color: var(--dim);
-}
-
-footer .actions {
-  justify-content: center;
-}
-
-footer small {
-  display: block;
-  font-size: 0.8rem;
-  margin-top: 0.35rem;
-}
-
-footer .disclaimer {
-  opacity: 0.75;
-  max-width: 60ch;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-footer .footer-meta a {
-  color: var(--accent);
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.setup {
-  max-width: 620px;
-  margin: 2rem auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.setup label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  font-weight: 600;
 }
 
 .actions {
@@ -99,45 +149,147 @@ footer .footer-meta a {
   text-align: left;
 }
 
+/* --- instruction feed --- */
 .steps {
-  font-size: 1.15rem;
-  padding-left: 1.4rem;
+  list-style: none;
+  counter-reset: step;
+  margin: 0.9rem 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.6rem;
 }
 
-.steps li::marker {
-  color: var(--accent);
-  font-weight: 700;
+.steps li {
+  counter-increment: step;
+  position: relative;
+  font-size: 1.12rem;
+  font-weight: 500;
+  padding: 0.7rem 0.9rem 0.7rem 3.1rem;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--rust);
+  border-radius: 10px;
+}
+
+.steps li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0.8rem;
+  top: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--rust-hi);
 }
 
 .hint {
   color: var(--dim);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
 }
 
 .warn {
-  color: #e8b23a;
+  color: var(--amber);
 }
 
+/* --- solo goal checklist --- */
 .goal {
-  padding-left: 1.2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
+.goal label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  cursor: pointer;
+}
+
+.goal input[type='checkbox'] {
+  accent-color: var(--teal);
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+  transform: translateY(2px);
+  cursor: pointer;
+}
+
+.goal label.done span {
+  color: var(--teal);
+  text-decoration: line-through;
+  text-decoration-color: rgba(63, 201, 185, 0.6);
+  opacity: 0.85;
+}
+
+/* --- action history feed --- */
 .log {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
   color: var(--dim);
   max-height: 45vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-hi) transparent;
+}
+
+.log li {
+  border-left: 2px solid var(--line);
+  padding-left: 0.6rem;
 }
 
 .log b {
-  color: var(--accent);
-  margin-right: 0.3rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--teal);
+  margin-right: 0.35rem;
+}
+
+/* --- setup briefing --- */
+.setup {
+  max-width: 640px;
+  margin: 2.2rem auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.setup h1 {
+  margin: 0;
+}
+
+.setup label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+/* --- footer --- */
+footer .actions {
+  justify-content: center;
+}
+
+footer small {
+  display: block;
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+}
+
+footer .disclaimer {
+  opacity: 0.75;
+  max-width: 62ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+footer .footer-meta a {
+  color: var(--teal);
 }

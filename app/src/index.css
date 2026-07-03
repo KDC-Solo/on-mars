@@ -1,12 +1,20 @@
 :root {
-  --bg: #14100e;
-  --panel: #201a17;
-  --text: #f0e8e0;
-  --dim: #a89a8e;
-  --accent: #c2452f;
-  --accent-soft: #7a3324;
-  --border: #3a2f28;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* DOME console palette: deep space, Mars rust, instrument teal. */
+  --space-0: #07060d;
+  --space-1: #12101f;
+  --panel-hi: rgba(30, 26, 48, 0.92);
+  --panel-lo: rgba(17, 15, 30, 0.92);
+  --line: #2c2740;
+  --line-hi: #453d68;
+  --ink: #ece5da;
+  --dim: #9d94b0;
+  --rust: #d4552a;
+  --rust-hi: #f0703d;
+  --teal: #3fc9b9;
+  --teal-dim: #22706a;
+  --amber: #e8b23a;
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-body: 'Rajdhani', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color-scheme: dark;
 }
 
@@ -16,60 +24,149 @@
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 17px;
+  background: linear-gradient(180deg, var(--space-0) 0%, var(--space-1) 55%, #1c1018 100%);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
   line-height: 1.45;
+  min-height: 100vh;
+}
+
+/* Starfield: three drifting dot layers, pure CSS. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    radial-gradient(1px 1px at 22px 34px, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 120px 90px, rgba(255, 255, 255, 0.28) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 200px 160px, rgba(160, 220, 255, 0.35) 50%, transparent 51%);
+  background-size:
+    240px 240px,
+    190px 190px,
+    320px 320px;
+}
+
+/* Mars rises at the bottom of the viewport. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      130% 42% at 50% 114%,
+      rgba(240, 112, 61, 0.5) 0%,
+      rgba(212, 85, 42, 0.28) 42%,
+      rgba(150, 52, 30, 0.12) 62%,
+      transparent 78%
+    ),
+    radial-gradient(120% 34% at 50% 112%, rgba(70, 22, 14, 0.9) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 #root {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0.75rem;
+  padding: 0.85rem 0.85rem 2rem;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+h1 {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 
 button {
-  font: inherit;
-  color: var(--text);
-  background: var(--accent-soft);
-  border: 1px solid var(--accent);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: linear-gradient(180deg, #241f38, #181428);
+  border: 1px solid var(--line-hi);
   border-radius: 10px;
-  padding: 0.55rem 0.9rem;
+  padding: 0.55rem 0.95rem;
   cursor: pointer;
   min-height: 44px;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 60ms ease;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px rgba(63, 201, 185, 0.25);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 button:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: default;
 }
 
 button.big {
-  font-size: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 700;
-  background: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  background: linear-gradient(180deg, var(--rust-hi), var(--rust) 60%, #a83d1e);
+  border-color: #f28a5c;
+  box-shadow:
+    0 0 18px rgba(212, 85, 42, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   padding: 0.8rem 1.4rem;
+}
+
+button.big:hover:not(:disabled) {
+  border-color: #ffc4a3;
+  box-shadow:
+    0 0 26px rgba(240, 112, 61, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 select {
   font: inherit;
-  background: var(--panel);
-  color: var(--text);
-  border: 1px solid var(--border);
+  font-weight: 500;
+  background: var(--panel-lo);
+  color: var(--ink);
+  border: 1px solid var(--line-hi);
   border-radius: 8px;
-  padding: 0.45rem;
+  padding: 0.5rem;
   max-width: 100%;
 }
 
-h1 {
-  font-size: 1.5rem;
+select:focus,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
 }
-h2 {
-  font-size: 1.3rem;
-}
-h3 {
-  font-size: 1.05rem;
-  color: var(--dim);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+
+a {
+  color: var(--teal);
 }

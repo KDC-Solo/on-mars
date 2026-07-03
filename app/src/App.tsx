@@ -20,12 +20,37 @@ import {
   recordTech,
   reportIllegalAction,
   shuttlePhase,
+  toggleGoalRequirement,
 } from './engine/game'
 import type { Step } from './engine/turn'
 import { BUILDING_LABEL } from './engine/turn'
 import { useGameStore } from './store'
 
 const BUILDINGS = Object.keys(BUILDING_LABEL) as BuildingType[]
+
+function HexLogo() {
+  return (
+    <svg className="hexlogo" viewBox="0 0 24 24" aria-hidden="true">
+      <polygon
+        points="12 1.5 21.1 6.75 21.1 17.25 12 22.5 2.9 17.25 2.9 6.75"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
+      <circle cx="12" cy="12" r="4.2" fill="var(--rust)" />
+    </svg>
+  )
+}
+
+function Brand({ sub }: { sub: string }) {
+  return (
+    <div className="brand">
+      <HexLogo />
+      <span className="brand-name">ON MARS</span>
+      <span className="brand-sub">{sub}</span>
+    </div>
+  )
+}
 
 function FooterSmallPrint() {
   return (
@@ -54,6 +79,7 @@ function Setup({ onStart }: { onStart: (s: GameState) => void }) {
 
   return (
     <div className="panel setup">
+      <Brand sub="MISSION BRIEFING" />
       <h1>On Mars Solo — Setup</h1>
       <p className="hint">
         Set up a 2-player game. Lacerda gets no Private Goals; his Bot starts on the Mine icon in
@@ -142,19 +168,35 @@ export default function App() {
   return (
     <div className="layout">
       <header>
-        <span>
-          Colony <b>L{g.colonyLevel}</b> · Lacerda in{' '}
-          <b>{l.location === 'orbit' ? 'Orbit' : 'the Colony'}</b> · Crystals{' '}
-          <b>
-            {l.crystals}/{l.depotCapacity}
-          </b>{' '}
-          · Bot → <b>{BUILDING_LABEL[LSS_SEQUENCE[l.botSequenceIndex]]}</b>
-        </span>
-        <span className="dim">
-          Blueprints {l.blueprints.length} ({l.usedBlueprints.length} used) · Scientists{' '}
-          {l.scientists.length} · Contracts {l.contractOP.length} · Techs {l.techCount} · Shelters{' '}
-          {l.shelters} · Ships {l.ships} · Bots {l.bots}
-        </span>
+        <Brand sub="SOLO CONSOLE" />
+        <div className="chips">
+          <span className="chip primary">
+            Colony <b>L{g.colonyLevel}</b>
+          </span>
+          <span className="chip primary">
+            Lacerda in <b>{l.location === 'orbit' ? 'Orbit' : 'the Colony'}</b>
+          </span>
+          <span className="chip primary">
+            Crystals{' '}
+            <b>
+              {l.crystals}/{l.depotCapacity}
+            </b>
+          </span>
+          <span className="chip primary">
+            Bot → <b>{BUILDING_LABEL[LSS_SEQUENCE[l.botSequenceIndex]]}</b>
+          </span>
+        </div>
+        <div className="chips dim">
+          <span className="chip">
+            Blueprints {l.blueprints.length} ({l.usedBlueprints.length} used)
+          </span>
+          <span className="chip">Scientists {l.scientists.length}</span>
+          <span className="chip">Contracts {l.contractOP.length}</span>
+          <span className="chip">Techs {l.techCount}</span>
+          <span className="chip">Shelters {l.shelters}</span>
+          <span className="chip">Ships {l.ships}</span>
+          <span className="chip">Bots {l.bots}</span>
+        </div>
       </header>
 
       <main className="panel">
@@ -332,8 +374,17 @@ export default function App() {
       <aside className="panel">
         <h3>Solo Goal: {goal.name}</h3>
         <ul className="goal">
-          {goal.requirements.map((r) => (
-            <li key={r}>{r}</li>
+          {goal.requirements.map((r, i) => (
+            <li key={r}>
+              <label className={g.goalChecked[i] ? 'done' : undefined}>
+                <input
+                  type="checkbox"
+                  checked={!!g.goalChecked[i]}
+                  onChange={() => store.apply(toggleGoalRequirement(g, i))}
+                />
+                <span>{r}</span>
+              </label>
+            </li>
           ))}
         </ul>
         <h3>Action history ({g.log.length})</h3>

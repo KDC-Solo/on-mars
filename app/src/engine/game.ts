@@ -33,6 +33,8 @@ export interface GameState {
   colonyLevel: number
   turn: number
   log: LogEntry[]
+  /** Player's ticks on the Solo Goal requirement checklist. */
+  goalChecked: boolean[]
 }
 
 export interface GameConfig {
@@ -53,7 +55,14 @@ export function newGame(config: GameConfig): GameState {
     colonyLevel: 1,
     turn: 0,
     log: [],
+    goalChecked: [],
   }
+}
+
+export function toggleGoalRequirement(state: GameState, index: number): GameState {
+  const next = [...state.goalChecked]
+  next[index] = !next[index]
+  return { ...state, goalChecked: next }
 }
 
 function log(state: GameState, text: string): GameState {
@@ -216,5 +225,7 @@ export function serialize(state: GameState): string {
 }
 
 export function deserialize(json: string): GameState {
-  return JSON.parse(json) as GameState
+  // Older saves may predate later-added fields; default them.
+  const parsed = JSON.parse(json) as GameState
+  return { ...parsed, goalChecked: parsed.goalChecked ?? [] }
 }
