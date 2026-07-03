@@ -21,8 +21,10 @@ async function finishTurn(page: import('@playwright/test').Page) {
 test('full solo game flow: setup, turns, records, phases, undo, resume', async ({ page }) => {
   await page.goto('./')
 
-  // Setup wizard
+  // Setup wizard, with the fan-disclaimer footer already visible
   await expect(page.getByRole('heading', { name: 'On Mars Solo — Setup' })).toBeVisible()
+  await expect(page.locator('footer')).toContainText('Unofficial fan companion')
+  await expect(page.locator('footer')).toContainText(/v\d+\.\d+\.\d+/)
   await page.getByRole('button', { name: 'Start game' }).click()
   const header = page.locator('header')
   await expect(header).toContainText('Colony L1')

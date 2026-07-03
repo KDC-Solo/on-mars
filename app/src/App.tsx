@@ -27,6 +27,25 @@ import { useGameStore } from './store'
 
 const BUILDINGS = Object.keys(BUILDING_LABEL) as BuildingType[]
 
+function FooterSmallPrint() {
+  return (
+    <>
+      <small>State auto-saves to this browser. Use Undo to revert an applied action.</small>
+      <small className="disclaimer">
+        Unofficial fan companion for solo play. Not affiliated with or endorsed by
+        Eagle-Gryphon Games or Vital Lacerda. No game art or rules text is reproduced — you
+        need your own copy of On Mars.
+      </small>
+      <small className="footer-meta">
+        v{__APP_VERSION__} ·{' '}
+        <a href="https://github.com/ianpogi5/on-mars-solo" target="_blank" rel="noreferrer">
+          Source &amp; issues on GitHub
+        </a>
+      </small>
+    </>
+  )
+}
+
 function Setup({ onStart }: { onStart: (s: GameState) => void }) {
   const [slots, setSlots] = useState<Record<MissionSlot, number>>({ A: 1, B: 4, C: 8 })
   const [goal, setGoal] = useState(SOLO_GOALS[0].id)
@@ -95,7 +114,14 @@ export default function App() {
   const [dialog, setDialog] = useState<Dialog>('none')
 
   if (!store.state) {
-    return <Setup onStart={(s) => store.apply(s)} />
+    return (
+      <>
+        <Setup onStart={(s) => store.apply(s)} />
+        <footer>
+          <FooterSmallPrint />
+        </footer>
+      </>
+    )
   }
   const g = store.state
   const l = g.lacerda
@@ -323,20 +349,23 @@ export default function App() {
         </ul>
       </aside>
 
-      <footer className="actions">
-        <button onClick={store.undo} disabled={!store.canUndo}>
-          ↩ Undo
-        </button>
-        <button onClick={store.redo} disabled={!store.canRedo}>
-          ↪ Redo
-        </button>
-        <button
-          onClick={() => {
-            if (confirm('Abandon this game?')) store.reset()
-          }}
-        >
-          New game
-        </button>
+      <footer>
+        <div className="actions">
+          <button onClick={store.undo} disabled={!store.canUndo}>
+            ↩ Undo
+          </button>
+          <button onClick={store.redo} disabled={!store.canRedo}>
+            ↪ Redo
+          </button>
+          <button
+            onClick={() => {
+              if (confirm('Abandon this game?')) store.reset()
+            }}
+          >
+            New game
+          </button>
+        </div>
+        <FooterSmallPrint />
       </footer>
     </div>
   )
