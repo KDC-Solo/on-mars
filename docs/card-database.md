@@ -27,32 +27,50 @@ count for 2/3/4 players; contributing grants the reward each time until complete
 Solo relevance: the solo game uses 3 Missions (slots A/B/C); solo cards move the matching
 tracker cube from the second deck pass onward, and Lacerda gains the contribution Crystals.
 
-## Private Goal cards (16) ⚠️
+## Private Goal cards (16) ✅
 
-Numbered 1–16 in the corner. Every card's reward is "Develop ×2 at no cost **or** a
-card-specific alternative" (per the Reference Book). Goals identified from photos +
-Reference Book text; a few icon readings still need confirmation against the cards:
+Numbered 1–16 in the corner. Every card's reward is "Develop ×2 at no cost **or** the
+listed alternative". All 16 goals matched between the photos and the Reference Book's
+complete list (the goal↔corner-number pairing comes from the photo icon readings):
 
-| # | Goal (best reading) | Confidence |
+| # | Goal | Alternative reward |
 |---|---|---|
-| 1 | Have 4 Blueprints (built or not) | high |
-| 2 | Upgrade 3 Advanced Buildings | medium |
-| 3 | Have 3 Mines with your Colonist or Advanced Building marker | medium |
-| 4 | Have 3 Discovery tiles taken with your Rover | high |
-| 5 | Advanced Building marker on a Complex of size ≥ 4 | medium |
-| 6 | Have 4 Resources of the same type (not Minerals) | high |
-| 7 | Have 3 Shelters | high |
-| 8 | Colony reaches level 3 ("LSS 3") | high |
-| 9 | Have 7 Colonists in your Living Quarters | high |
-| 10 | Have at least 5 Tech tiles | high |
-| 11 | Have 3 Ships in your Hangar | high |
-| 12 | (circle with crossed-out tech icon, ×2) — unidentified | low |
-| 13 | Have 1 Scientist and 1 Earth Contract completed | high |
-| 14 | Tech tiles on highlighted Lab spaces (hex-cluster art) | low |
-| 15 | (">>> + cube" ×3 — Progress-cube or Time-track goal) — unidentified | low |
-| 16 | (hexes + ship, ×2) — unidentified | low |
+| 1 | Have 4 Blueprints (built or not) | Upgrade up to 2 Buildings at no cost |
+| 2 | Upgrade 3 Advanced Buildings | Gain up to 3 Resources (not Minerals) |
+| 3 | Have 3 Mines with your Colonist or your Advanced Building marker | Gain 3 Minerals |
+| 4 | Have 3 Discovery tiles taken with your Rover | Move Rover up to 5 spaces (Crystals/Tech may extend) |
+| 5 | Advanced Building marker on a Complex of size ≥ 4 | Take 2 Colonists from supply into Living Quarters |
+| 6 | Have 4 Resources of the same type (not Minerals) | Take an Earth Contract from the display at no cost |
+| 7 | Have 3 Shelters | Take 2 Colonists from supply into Living Quarters |
+| 8 | Colony reaches level 3 ("LSS 3") | Move Rover up to 5 spaces (Crystals/Tech may extend) |
+| 9 | Have 7 Colonists in your Living Quarters | Welcome a Ship at no cost |
+| 10 | Have at least 5 Tech tiles (initial Shelter Tech counts) | Retrieve 2 Colonists from board and/or Working Area |
+| 11 | Have 3 Ships in your Hangar | Travel to Orbit/Colony with normal travel steps |
+| 12 | Have 2 Research tiles | Take a Scientist card at no cost |
+| 13 | Have 1 Scientist and 1 Earth Contract completed | Take 1 Earth Contract from the display at no cost |
+| 14 | Have 3 Tech tiles on the indicated spaces of your Lab | Take up to 3 Crystals from the supply |
+| 15 | Have 3 cubes in the Progress area | Retrieve 2 Colonists from Action slots and/or Working Area |
+| 16 | Have 2 Advanced Building markers in 2 different Complexes of size ≥ 3 | Upgrade up to 2 Buildings at no cost |
 
 Solo relevance: Lacerda gets none; the player's Solo Goals require completing 1 Private Goal.
+
+## Scientist cards (6) ✅
+
+Fully specified by the Reference Book (not photographed — not needed). All score
+**3 OP per matching upgraded Building on Mars (any player's)** at game end:
+
+| Scientist | Hire cost | Works in (upgraded) | Scores 3 OP per upgraded |
+|---|---|---|---|
+| Geologist | Move 2 Colonists from Living Quarters to Working Area | Mine | Generator |
+| R&D Engineer | 2 Minerals | Generator | Water Extractor |
+| Hydrologist | 2 Batteries | Water Extractor | Greenhouse |
+| Biochemist | 2 Water | Greenhouse | Oxygen Condenser |
+| Geochemist | 2 Plants | Oxygen Condenser | Shelter |
+| Systems Engineer | 2 Oxygen | Shelter | Mine |
+
+Note the cycle: each Scientist works one step ahead of what they score (Mine → Generator →
+Water Extractor → Greenhouse → Oxygen Condenser → Shelter → Mine). Solo relevance: Lacerda
+hires the Scientist with the most potential OP; max 2, then he takes Contracts.
 
 ## Blueprint cards (24) ✅ names / ⚠️ details
 
@@ -87,11 +105,19 @@ The teal cards initially mistaken for the solo deck. Beginner variant ("First Co
 Solo relevance: none directly (variant is for multiplayer first games), but worth data-basing
 if the app later adds a "first game" mode.
 
-## Not photographed yet ❌
+## Earth Contract cards (12) ❌ — the last data gap
 
-- **Scientist cards (6):** per Reference Book — specialties matching Blueprint types
-  (Geologist, R&D Engineer, Hydrologist, Biochemist, Geochemist, Systems Engineer);
-  score 3 OP per matching Advanced Building on the map at game end. Needed by the solo
-  engine (Lacerda hires by "most potential OP based on Blueprints owned").
-- **Earth Contract cards (12):** 2 types in base game. Needed: Lacerda "takes the one
-  worth the most OP" and auto-completes it.
+Per the Reference Book there are 2 types (6 of each, numbered — the solo rules cite
+"the Delivery Contract with Plants and Minerals (#11)"):
+
+- **Upgrade contracts:** 12 OP at game end if you have an Advanced Building marker on a
+  Complex of the depicted type of size ≥ 4; otherwise −6 OP.
+- **Deliver contracts:** place the depicted Resources on the card (permanent, exempt from
+  storage limits); 9 OP if complete at game end, otherwise −4 OP. Minerals can't substitute.
+
+Per-card contents (which building type / which resource mix, and each card's number) are
+**not published anywhere findable online** (checked: official EGG downloads = same preview
+PDFs, UltraBoardGames, BGG threads/galleries). → Photograph the 12 physical cards.
+
+Solo relevance: Lacerda "takes the Contract worth the most OP" and auto-completes it, so
+the engine needs at least each card's number, type, and OP value.
