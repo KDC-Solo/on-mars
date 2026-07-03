@@ -26,6 +26,12 @@ physical moves on the table and focus on your own game.
   Techs, Shelters, Ships, Bots, and his LSS Bot-icon loop.
 - **Action history, undo/redo, autosave** — every event is logged, every tap reversible,
   and the game resumes after closing the browser.
+- **Mission Report final scoring** — a guided end-game calculator: the app fills in
+  everything it tracked for Lacerda (kept Ships, Blueprint ±OP, auto-completed Contracts,
+  his always-full Living Quarters), you enter the table facts, and it renders both
+  breakdowns live with a verdict against your Solo Goal's OP margin.
+- **Night- and day-side themes** plus subtle synthesized console sound cues — both
+  toggleable from the header.
 
 ## Screenshots
 
@@ -36,6 +42,10 @@ physical moves on the table and focus on your own game.
 | One-tap questions | On a phone |
 | --- | --- |
 | ![Colonist-slot question](screenshots/question.png) | ![Mobile layout](screenshots/mobile.png) |
+
+| Mission Report (final scoring) | Day-side theme |
+| --- | --- |
+| ![Mission report scoring screen](screenshots/report.png) | ![Light theme](screenshots/light.png) |
 
 ## How it works
 

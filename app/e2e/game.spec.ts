@@ -87,6 +87,41 @@ test('full solo game flow: setup, turns, records, phases, undo, resume', async (
   await expect(page.getByRole('heading', { name: 'On Mars Solo — Setup' })).toHaveCount(0)
 })
 
+test('console toggles: theme persists across reloads, sound button flips', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.getByRole('button', { name: 'Toggle theme' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+  const sound = page.getByRole('button', { name: 'Toggle sound' })
+  await expect(sound).toHaveText('🔊')
+  await sound.click()
+  await expect(sound).toHaveText('🔇')
+  await page.reload()
+  await expect(page.getByRole('button', { name: 'Toggle sound' })).toHaveText('🔇')
+})
+
+test('mission report scores both sides live and renders a verdict', async ({ page }) => {
+  await page.goto('./')
+  await page.getByRole('button', { name: 'Start game' }).click()
+  await page.getByRole('button', { name: 'Final scoring' }).click()
+  await expect(page.getByRole('heading', { name: /Mission Report/ })).toBeVisible()
+
+  // All zeros: Lacerda still gets his full-Living-Quarters 21 OP.
+  await expect(page.locator('.scorecard').first()).toContainText('Lacerda — 21 OP')
+  await expect(page.locator('.verdict')).toContainText('Lacerda claims the colony')
+
+  // Give the player a winning table: 60 track + 11 progress beats 21 by ≥ 1.
+  const numInput = (label: string, i: number) =>
+    page.locator('.num', { hasText: label }).nth(i).locator('input')
+  await numInput('OP track', 1).fill('60')
+  await numInput('Progress cubes (0–5)', 1).fill('5')
+  await expect(page.locator('.scorecard').nth(1)).toContainText('You — 71 OP')
+  await expect(page.locator('.verdict')).toContainText('Margin met: +50 OP')
+})
+
 test('second pass through the deck triggers the mission-cube rule', async ({ page }) => {
   await page.goto('./')
   await page.getByRole('button', { name: 'Start game' }).click()

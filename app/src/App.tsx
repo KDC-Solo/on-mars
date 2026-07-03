@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { BLUEPRINTS } from './data/blueprints'
 import { MISSIONS } from './data/missions'
@@ -22,8 +23,12 @@ import {
   shuttlePhase,
   toggleGoalRequirement,
 } from './engine/game'
+import type { BoardCounts } from './engine/scoring'
+import { EMPTY_BOARD, scoreLacerda, scorePlayer, verdict } from './engine/scoring'
+import type { ScoreBreakdown } from './engine/scoring'
 import type { Step } from './engine/turn'
 import { BUILDING_LABEL } from './engine/turn'
+import { cues, setSoundEnabled, soundEnabled } from './sound'
 import { useGameStore } from './store'
 
 const BUILDINGS = Object.keys(BUILDING_LABEL) as BuildingType[]
@@ -42,12 +47,93 @@ function HexLogo() {
   )
 }
 
-function Brand({ sub }: { sub: string }) {
+function useConsoleToggles() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('om-theme') ?? 'dark')
+  const [sound, setSound] = useState(soundEnabled)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('om-theme', theme)
+  }, [theme])
+
+  const toggles = (
+    <span className="toggles">
+      <button
+        className="icon-btn"
+        aria-label="Toggle theme"
+        title={theme === 'dark' ? 'Day-side view' : 'Night-side view'}
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      >
+        {theme === 'dark' ? '☀' : '☾'}
+      </button>
+      <button
+        className="icon-btn"
+        aria-label="Toggle sound"
+        title={sound ? 'Mute console' : 'Unmute console'}
+        onClick={() => {
+          setSoundEnabled(!sound)
+          setSound(!sound)
+          if (!sound) cues.tick()
+        }}
+      >
+        {sound ? '🔊' : '🔇'}
+      </button>
+    </span>
+  )
+  return toggles
+}
+
+function Brand({ sub, right }: { sub: string; right?: ReactNode }) {
   return (
     <div className="brand">
       <HexLogo />
       <span className="brand-name">ON MARS</span>
       <span className="brand-sub">{sub}</span>
+      {right && <span className="brand-right">{right}</span>}
+    </div>
+  )
+}
+
+function Num({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: number
+  onChange: (n: number) => void
+}) {
+  return (
+    <label className="num">
+      <span>{label}</span>
+      <input
+        type="number"
+        inputMode="numeric"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value) || 0)}
+      />
+    </label>
+  )
+}
+
+function ScoreTable({ title, score }: { title: string; score: ScoreBreakdown }) {
+  return (
+    <div className="scorecard">
+      <h3>{title}</h3>
+      <table className="scoretable">
+        <tbody>
+          {score.lines.map((x) => (
+            <tr key={x.label}>
+              <td>{x.label}</td>
+              <td className="op">{x.op}</td>
+            </tr>
+          ))}
+          <tr className="total">
+            <td>Total</td>
+            <td className="op">{score.total}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   )
 }
@@ -71,7 +157,7 @@ function FooterSmallPrint() {
   )
 }
 
-function Setup({ onStart }: { onStart: (s: GameState) => void }) {
+function Setup({ onStart, toggles }: { onStart: (s: GameState) => void; toggles: ReactNode }) {
   const [slots, setSlots] = useState<Record<MissionSlot, number>>({ A: 1, B: 4, C: 8 })
   const [goal, setGoal] = useState(SOLO_GOALS[0].id)
 
@@ -79,7 +165,7 @@ function Setup({ onStart }: { onStart: (s: GameState) => void }) {
 
   return (
     <div className="panel setup">
-      <Brand sub="MISSION BRIEFING" />
+      <Brand sub="MISSION BRIEFING" right={toggles} />
       <h1>On Mars Solo — Setup</h1>
       <p className="hint">
         Set up a 2-player game. Lacerda gets no Private Goals; his Bot starts on the Mine icon in
@@ -133,16 +219,55 @@ type Dialog =
   | 'record-scientist'
   | 'record-contract'
   | 'ambiguity'
+  | 'report'
+
+interface ReportInputs {
+  lTrack: number
+  lTech: number
+  lCubes: number
+  pTrack: number
+  pCubes: number
+  pTech: number
+  pShips: number
+  pB1: number
+  pB3: number
+  pU1: number
+  pU3: number
+  pContracts: number
+  pColonists: number
+  pScientists: ScientistId[]
+  board: BoardCounts
+}
+
+const EMPTY_REPORT: ReportInputs = {
+  lTrack: 0,
+  lTech: 0,
+  lCubes: 0,
+  pTrack: 0,
+  pCubes: 0,
+  pTech: 0,
+  pShips: 0,
+  pB1: 0,
+  pB3: 0,
+  pU1: 0,
+  pU3: 0,
+  pContracts: 0,
+  pColonists: 0,
+  pScientists: [],
+  board: EMPTY_BOARD,
+}
 
 export default function App() {
   const store = useGameStore()
   const [steps, setSteps] = useState<Step[]>([])
   const [dialog, setDialog] = useState<Dialog>('none')
+  const [report, setReport] = useState<ReportInputs>(EMPTY_REPORT)
+  const toggles = useConsoleToggles()
 
   if (!store.state) {
     return (
       <>
-        <Setup onStart={(s) => store.apply(s)} />
+        <Setup onStart={(s) => store.apply(s)} toggles={toggles} />
         <footer>
           <FooterSmallPrint />
         </footer>
@@ -160,6 +285,7 @@ export default function App() {
   const applyAndClose = (next: GameState) => {
     store.apply(next)
     setDialog('none')
+    cues.tick()
   }
 
   const goal = SOLO_GOALS.find((x) => x.id === g.soloGoalId)!
@@ -168,7 +294,7 @@ export default function App() {
   return (
     <div className="layout">
       <header>
-        <Brand sub="SOLO CONSOLE" />
+        <Brand sub="SOLO CONSOLE" right={toggles} />
         <div className="chips">
           <span className="chip primary">
             Colony <b>L{g.colonyLevel}</b>
@@ -207,8 +333,16 @@ export default function App() {
                 Lacerda’s turn
               </button>
               <button onClick={() => setDialog('shuttle')}>Shuttle phase</button>
-              <button onClick={() => run(colonyLevelUp(g))}>Colony leveled up</button>
+              <button
+                onClick={() => {
+                  run(colonyLevelUp(g))
+                  cues.levelUp()
+                }}
+              >
+                Colony leveled up
+              </button>
               <button onClick={() => setDialog('ambiguity')}>Resolve ambiguity</button>
+              <button onClick={() => setDialog('report')}>Final scoring</button>
             </div>
             {steps.length > 0 && (
               <>
@@ -218,10 +352,23 @@ export default function App() {
                   ))}
                 </ol>
                 <div className="actions">
-                  <button className="big" onClick={() => setSteps([])}>
+                  <button
+                    className="big"
+                    onClick={() => {
+                      setSteps([])
+                      cues.done()
+                    }}
+                  >
                     Done
                   </button>
-                  <button onClick={() => run(reportIllegalAction(g))}>Not possible → Rover</button>
+                  <button
+                    onClick={() => {
+                      run(reportIllegalAction(g))
+                      cues.error()
+                    }}
+                  >
+                    Not possible → Rover
+                  </button>
                 </div>
                 <div className="actions">
                   <button onClick={() => setDialog('record-blueprint')}>+ Blueprint</button>
@@ -246,7 +393,14 @@ export default function App() {
             <p className="hint">Count yours and his on that action’s slots — he pays 1 Crystal each.</p>
             <div className="actions">
               {[0, 1, 2, 3, 4].map((n) => (
-                <button key={n} className="big" onClick={() => run(beginLacerdaTurn(g, n))}>
+                <button
+                  key={n}
+                  className="big"
+                  onClick={() => {
+                    run(beginLacerdaTurn(g, n))
+                    cues.reveal()
+                  }}
+                >
                   {n}
                 </button>
               ))}
@@ -259,7 +413,14 @@ export default function App() {
             <h2>How many Turn Order spaces are still free?</h2>
             <div className="actions">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <button key={n} className="big" onClick={() => run(shuttlePhase(g, n))}>
+                <button
+                  key={n}
+                  className="big"
+                  onClick={() => {
+                    run(shuttlePhase(g, n))
+                    cues.done()
+                  }}
+                >
                   {n}
                 </button>
               ))}
@@ -340,6 +501,119 @@ export default function App() {
           </>
         )}
 
+        {dialog === 'report' && (
+          <div className="report">
+            <h2>Mission Report — Final Scoring</h2>
+            <p className="hint">
+              Enter what the app can’t see on the table. Both totals update live; everything
+              Lacerda’s tracker already knows is filled in automatically.
+            </p>
+
+            <h3>Advanced Buildings on Mars (any player’s, by type)</h3>
+            <div className="numgrid">
+              {BUILDINGS.map((b) => (
+                <Num
+                  key={b}
+                  label={BUILDING_LABEL[b]}
+                  value={report.board[b]}
+                  onChange={(n) => setReport({ ...report, board: { ...report.board, [b]: n } })}
+                />
+              ))}
+            </div>
+
+            <div className="report-cols">
+              <div>
+                <h3>Lacerda — table facts</h3>
+                <div className="numgrid">
+                  <Num label="OP track" value={report.lTrack} onChange={(n) => setReport({ ...report, lTrack: n })} />
+                  <Num label="Tech OP (Lab columns)" value={report.lTech} onChange={(n) => setReport({ ...report, lTech: n })} />
+                  <Num label="Progress cubes (0–5)" value={report.lCubes} onChange={(n) => setReport({ ...report, lCubes: n })} />
+                </div>
+              </div>
+              <div>
+                <h3>You — table facts</h3>
+                <div className="numgrid">
+                  <Num label="OP track" value={report.pTrack} onChange={(n) => setReport({ ...report, pTrack: n })} />
+                  <Num label="Tech OP (Lab columns)" value={report.pTech} onChange={(n) => setReport({ ...report, pTech: n })} />
+                  <Num label="Progress cubes (0–5)" value={report.pCubes} onChange={(n) => setReport({ ...report, pCubes: n })} />
+                  <Num label="Ships in Hangar" value={report.pShips} onChange={(n) => setReport({ ...report, pShips: n })} />
+                  <Num label="Built L1 Blueprints" value={report.pB1} onChange={(n) => setReport({ ...report, pB1: n })} />
+                  <Num label="Built L3 Blueprints" value={report.pB3} onChange={(n) => setReport({ ...report, pB3: n })} />
+                  <Num label="Unbuilt L1 Blueprints" value={report.pU1} onChange={(n) => setReport({ ...report, pU1: n })} />
+                  <Num label="Unbuilt L3 Blueprints" value={report.pU3} onChange={(n) => setReport({ ...report, pU3: n })} />
+                  <Num label="Contracts OP (net ±)" value={report.pContracts} onChange={(n) => setReport({ ...report, pContracts: n })} />
+                  <Num label="Colonists OP (0–21)" value={report.pColonists} onChange={(n) => setReport({ ...report, pColonists: n })} />
+                </div>
+                <h3>Your Scientists</h3>
+                <div className="chips">
+                  {SCIENTISTS.filter((s) => !l.scientists.includes(s.id)).map((s) => (
+                    <label key={s.id} className="chip pick">
+                      <input
+                        type="checkbox"
+                        checked={report.pScientists.includes(s.id)}
+                        onChange={() =>
+                          setReport({
+                            ...report,
+                            pScientists: report.pScientists.includes(s.id)
+                              ? report.pScientists.filter((x) => x !== s.id)
+                              : [...report.pScientists, s.id],
+                          })
+                        }
+                      />
+                      {s.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {(() => {
+              const lScore = scoreLacerda(l, {
+                trackOP: report.lTrack,
+                techOP: report.lTech,
+                progressCubes: report.lCubes,
+                board: report.board,
+              })
+              const pScore = scorePlayer({
+                trackOP: report.pTrack,
+                progressCubes: report.pCubes,
+                techOP: report.pTech,
+                ships: report.pShips,
+                builtL1: report.pB1,
+                builtL3: report.pB3,
+                unbuiltL1: report.pU1,
+                unbuiltL3: report.pU3,
+                scientists: report.pScientists,
+                contractsOP: report.pContracts,
+                colonistsOP: report.pColonists,
+                board: report.board,
+              })
+              const v = verdict(pScore, lScore, g.soloGoalId)
+              const ticked = g.goalChecked.filter(Boolean).length
+              const allTicked = ticked === goal.requirements.length
+              return (
+                <>
+                  <div className="report-cols">
+                    <ScoreTable title={`Lacerda — ${lScore.total} OP`} score={lScore} />
+                    <ScoreTable title={`You — ${pScore.total} OP`} score={pScore} />
+                  </div>
+                  <div className={`verdict ${v.marginMet && allTicked ? 'win' : v.marginMet ? 'partial' : 'fail'}`}>
+                    {v.marginMet
+                      ? `Margin met: +${v.margin} OP (needs +${v.required}).`
+                      : `Margin missed: ${v.margin >= 0 ? '+' : ''}${v.margin} OP of the +${v.required} required.`}{' '}
+                    Checklist: {ticked}/{goal.requirements.length} ticked.{' '}
+                    {v.marginMet && allTicked
+                      ? 'MISSION ACCOMPLISHED — the colony is yours.'
+                      : v.marginMet
+                        ? 'Verify the remaining goal requirements to claim victory.'
+                        : 'Lacerda claims the colony this time.'}
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+        )}
+
         {dialog === 'ambiguity' && (
           <>
             <h2>How many tied options?</h2>
@@ -355,6 +629,7 @@ export default function App() {
                     store.apply(r.state)
                     setSteps(r.steps)
                     setDialog('none')
+                    cues.reveal()
                   }}
                 >
                   {n}
@@ -380,7 +655,10 @@ export default function App() {
                 <input
                   type="checkbox"
                   checked={!!g.goalChecked[i]}
-                  onChange={() => store.apply(toggleGoalRequirement(g, i))}
+                  onChange={() => {
+                    store.apply(toggleGoalRequirement(g, i))
+                    cues.tick()
+                  }}
                 />
                 <span>{r}</span>
               </label>

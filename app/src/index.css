@@ -170,3 +170,60 @@ input:focus-visible {
 a {
   color: var(--teal);
 }
+
+/* ---------------------------------------------------------------------------
+   Day-side theme: dusty butterscotch Martian daylight. Panels go paper-light,
+   the starfield disappears, the horizon glow stays but softens.
+--------------------------------------------------------------------------- */
+:root[data-theme='light'] {
+  --space-0: #f2e5cf;
+  --space-1: #ecd7b4;
+  --panel-hi: rgba(253, 248, 240, 0.94);
+  --panel-lo: rgba(244, 234, 218, 0.94);
+  --line: #d8c5a3;
+  --line-hi: #bfa87e;
+  --ink: #2b2117;
+  --dim: #7a6a52;
+  --rust: #c1440e;
+  --rust-hi: #e05a20;
+  --teal: #12756b;
+  --teal-dim: #5aa199;
+  --amber: #a36f0a;
+  color-scheme: light;
+}
+
+:root[data-theme='light'] body {
+  background: linear-gradient(180deg, #f4e8d4 0%, #ecd7b4 55%, #dfb98a 100%);
+}
+
+:root[data-theme='light'] body::before {
+  display: none;
+}
+
+:root[data-theme='light'] body::after {
+  background:
+    radial-gradient(
+      130% 42% at 50% 114%,
+      rgba(193, 68, 14, 0.4) 0%,
+      rgba(193, 68, 14, 0.18) 42%,
+      transparent 72%
+    );
+}
+
+:root[data-theme='light'] button {
+  background: linear-gradient(180deg, #fdf8f0, #efe2cb);
+  border-color: var(--line-hi);
+}
+
+:root[data-theme='light'] button.big {
+  background: linear-gradient(180deg, var(--rust-hi), var(--rust) 60%, #9a350b);
+  border-color: #e88b5a;
+  color: #fff8ef;
+  box-shadow:
+    0 0 14px rgba(193, 68, 14, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+:root[data-theme='light'] select {
+  background: #fdf8f0;
+}
