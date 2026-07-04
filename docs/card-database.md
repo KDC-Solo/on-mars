@@ -105,25 +105,32 @@ The teal cards initially mistaken for the solo deck. Beginner variant ("First Co
 Solo relevance: none directly (variant is for multiplayer first games), but worth data-basing
 if the app later adds a "first game" mode.
 
-## Earth Contract cards (12) ⚠️ — structure confirmed, per-card details partial
+## Earth Contract cards (12) ✅ — decoded frame-by-frame from the unboxing video
 
-Per the Reference Book there are 2 types (6 of each, numbered — the solo rules cite
-"the Delivery Contract with Plants and Minerals (#11)"):
+Two types, 6 of each (Reference Book p. 3). Transcribed in `app/src/data/contracts.ts`.
 
-- **Upgrade contracts (6):** 12 OP at game end if you have an Advanced Building marker on a
-  Complex of the depicted type of size ≥ 4; otherwise −6 OP. One per building type
-  (sighted in the Dice Tower unboxing video, ~9:55–10:05: Water Extractor and Greenhouse
-  size-4 complexes with the "12" OP band).
-- **Deliver contracts (6):** place the depicted Resources on the card (permanent, exempt
-  from storage limits); 9 OP if complete at game end, otherwise −4 OP. Minerals can't
-  substitute. Sighted mixes include "2 Crystals + …" and "3 Air/Water + Crystal" (dark
-  purple faces; too fast in the video to read fully).
+- **Upgrade contracts (#1–6):** 12 OP at game end if you have an Advanced Building marker
+  on a Complex of the depicted type of size ≥ 4; otherwise −6 OP. One per building type.
+- **Deliver contracts (#7–12):** place the depicted Resources/Crystals on the card
+  (permanent, exempt from storage limits); 9 OP if complete at game end, otherwise −4 OP.
+  Minerals can't substitute for other Resources.
 
-**Engine impact — resolved:** Lacerda's contracts auto-complete and he "takes the one worth
-the most OP", so the solo engine only needs the *type/OP* (Upgrade 12 beats Deliver 9),
-never the card contents. The player reads their own contracts off the physical cards.
-Full per-card mixes/numbering remain nice-to-have for a card browser — photograph the 6
-Deliver cards if we ever want that.
+| # | Deliver requirement |
+|---|---|
+| 7 | 4 Minerals |
+| 8 | 3 Batteries + 2 Minerals |
+| 9 | 3 Water + 2 Minerals |
+| 10 | 3 Oxygen + 2 Minerals |
+| 11 | 3 Plants + 2 Minerals |
+| 12 | 3 Crystals + 2 Minerals |
+
+Numbering: inferred, not read off the cards (the corner indices are motion-blurred in
+every frame). Two independent anchors: the solo rules cite "the Delivery Contract with
+Plants and Minerals (**#11**)" (Rulebook p. 23), and the factory-fresh deck riffles
+Upgrade cards first, then Delivers in Mineral → Battery → Water → Oxygen → Plant →
+Crystal order — which lands Plants+Minerals exactly on #11. #9 (3 Water + 2 Minerals)
+also matches the Rulebook p. 21 scoring example ("missing 1 Water", −4 OP, gauge 2).
 
 Source: [Dice Tower "On Mars - Daily Game Unboxing"](https://www.youtube.com/watch?v=_ytq0lvCy88)
-(cards riffled ~9:45–10:05), cross-checked with Reference Book p. 3.
+(cards riffled ~9:45–10:05, read frame-by-frame 2026-07-04), cross-checked with Reference
+Book p. 3 and the Rulebook pp. 21, 23.

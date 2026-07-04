@@ -120,6 +120,18 @@ test('mission report scores both sides live and renders a verdict', async ({ pag
   await numInput('Progress cubes (0–5)', 1).fill('5')
   await expect(page.locator('.scorecard').nth(1)).toContainText('You — 71 OP')
   await expect(page.locator('.verdict')).toContainText('Margin met: +50 OP')
+
+  // Colonists: pick the value next to the highest Living Quarters slot.
+  await page.getByRole('button', { name: '10', exact: true }).click()
+  await expect(page.locator('.scorecard').nth(1)).toContainText('You — 81 OP')
+
+  // Contracts cycle not-yours → completed (+9) → failed (−4).
+  const waterContract = page.getByRole('button', { name: /#9 3 Water \+ 2 Minerals/ })
+  await waterContract.click()
+  await expect(page.locator('.scorecard').nth(1)).toContainText('You — 90 OP')
+  await waterContract.click()
+  await expect(page.locator('.scorecard').nth(1)).toContainText('You — 77 OP')
+  await expect(page.locator('.scorecard').nth(1)).toContainText('Earth Contracts (0 ✓, 1 ✗)')
 })
 
 test('second pass through the deck triggers the mission-cube rule', async ({ page }) => {

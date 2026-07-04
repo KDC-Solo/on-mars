@@ -33,7 +33,7 @@ Vite + React + TypeScript PWA (offline-first, no backend). Commands (run in `app
 Architecture: the app is "Lacerda's brain" with a hybrid state model (see PRD §4). Layers:
 
 - `src/data/` — typed card data transcribed from `docs/*.md` (solo deck, missions, scientists,
-  blueprints, private goals, solo goals). Earth Contracts not yet catalogued.
+  blueprints, private goals, solo goals, earth contracts).
 - `src/engine/` — pure, immutable, fully serializable game logic. `rng.ts` (seeded mulberry32 —
   all randomness flows through the persisted RNG state so games replay deterministically),
   `deck.ts` (solo deck + second-pass mission rule + ambiguity resolver), `lacerda.ts` (bot state),

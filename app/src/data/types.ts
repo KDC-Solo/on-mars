@@ -67,6 +67,26 @@ export interface BlueprintCard {
   gainOnObtain: string
 }
 
+export type ResourceType = 'mineral' | 'battery' | 'water' | 'plant' | 'oxygen'
+
+export type ContractCard =
+  | {
+      id: number
+      type: 'upgrade'
+      /** Needs your Advanced Building marker on a Complex of this type, size ≥ 4. */
+      building: BuildingType
+      opComplete: 12
+      opFailed: -6
+    }
+  | {
+      id: number
+      type: 'deliver'
+      /** Resources/Crystals that must sit on the card at game end (Minerals never substitute). */
+      requires: { resources: Partial<Record<ResourceType, number>>; crystals?: number }
+      opComplete: 9
+      opFailed: -4
+    }
+
 export interface PrivateGoalCard {
   id: number
   goal: string

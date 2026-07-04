@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { CONTRACTS } from '../data/contracts'
 import { createLacerda } from './lacerda'
 import {
   blueprintsOP,
   EMPTY_BOARD,
+  LIVING_QUARTERS_OP,
+  playerContractsOP,
   progressOP,
   scientistsOP,
   scoreLacerda,
@@ -40,6 +43,34 @@ describe('end-game scoring', () => {
     expect(s.lines.find((x) => x.label.includes('treated as full'))?.op).toBe(21)
   })
 
+  it('exposes the Living Quarters ladder printed on the player board (rulebook p. 21)', () => {
+    expect([...LIVING_QUARTERS_OP]).toEqual([0, 3, 6, 10, 15, 21])
+  })
+
+  it('catalogues 12 Earth Contracts: 6 upgrade (one per building) + 6 deliver', () => {
+    const upgrades = CONTRACTS.filter((c) => c.type === 'upgrade')
+    const delivers = CONTRACTS.filter((c) => c.type === 'deliver')
+    expect(upgrades).toHaveLength(6)
+    expect(new Set(upgrades.map((c) => c.type === 'upgrade' && c.building)).size).toBe(6)
+    expect(delivers).toHaveLength(6)
+    // Solo rules (rulebook p. 23) cite #11 as the Plants + Minerals delivery.
+    const eleven = CONTRACTS.find((c) => c.id === 11)!
+    expect(eleven.type === 'deliver' && eleven.requires.resources).toEqual({ plant: 3, mineral: 2 })
+  })
+
+  it('scores contracts from printed card values (p. 21 example: incomplete water delivery = −4)', () => {
+    expect(playerContractsOP([{ id: 9, completed: false }])).toBe(-4)
+    expect(playerContractsOP([{ id: 9, completed: true }])).toBe(9)
+    // Upgrade contract: +12 done, −6 failed; mixed net.
+    expect(
+      playerContractsOP([
+        { id: 4, completed: true },
+        { id: 11, completed: true },
+        { id: 7, completed: false },
+      ])
+    ).toBe(12 + 9 - 4)
+  })
+
   it('computes the verdict margin against the solo goal requirement', () => {
     const player = scorePlayer({
       trackOP: 50,
@@ -51,7 +82,7 @@ describe('end-game scoring', () => {
       unbuiltL1: 1,
       unbuiltL3: 0,
       scientists: ['hydrologist'],
-      contractsOP: 12,
+      contracts: [{ id: 1, completed: true }],
       colonistsOP: 10,
       board: { ...EMPTY_BOARD, greenhouse: 2 },
     })

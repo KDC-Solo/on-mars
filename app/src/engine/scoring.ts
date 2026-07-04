@@ -1,4 +1,5 @@
 import { BLUEPRINTS } from '../data/blueprints'
+import { CONTRACTS } from '../data/contracts'
 import { SCIENTISTS } from '../data/scientists'
 import type { BuildingType, ScientistId, SoloGoalCard } from '../data/types'
 import type { LacerdaState } from './lacerda'
@@ -23,6 +24,12 @@ export const EMPTY_BOARD: BoardCounts = {
 
 /** 1/2/4/7/11 OP for 1–5 cubes in the Progress area. */
 export const PROGRESS_OP = [0, 1, 2, 4, 7, 11] as const
+
+/**
+ * OP values printed up the Living Quarters ladder (Rulebook p. 21: score the
+ * number next to your highest located Colonist; 0 if none reaches the first mark).
+ */
+export const LIVING_QUARTERS_OP = [0, 3, 6, 10, 15, 21] as const
 
 /** Highest Living Quarters slot value — what a full LQ scores. */
 export const FULL_LIVING_QUARTERS_OP = 21
@@ -96,6 +103,20 @@ export function scoreLacerda(l: LacerdaState, input: LacerdaScoreInput): ScoreBr
   ])
 }
 
+/** One Earth Contract the player holds and whether they completed it. */
+export interface PlayerContractEntry {
+  id: number
+  completed: boolean
+}
+
+/** Net contract OP from the printed card values (+12/−6 upgrade, +9/−4 deliver). */
+export function playerContractsOP(entries: readonly PlayerContractEntry[]): number {
+  return entries.reduce((s, e) => {
+    const card = CONTRACTS.find((c) => c.id === e.id)!
+    return s + (e.completed ? card.opComplete : card.opFailed)
+  }, 0)
+}
+
 export interface PlayerScoreInput {
   trackOP: number
   progressCubes: number
@@ -106,13 +127,15 @@ export interface PlayerScoreInput {
   unbuiltL1: number
   unbuiltL3: number
   scientists: ScientistId[]
-  contractsOP: number
+  contracts: readonly PlayerContractEntry[]
   colonistsOP: number
   board: BoardCounts
 }
 
 export function scorePlayer(p: PlayerScoreInput): ScoreBreakdown {
   const advanced = p.builtL1 * 3 + p.builtL3 * 5 - (p.unbuiltL1 * 3 + p.unbuiltL3 * 5)
+  const done = p.contracts.filter((c) => c.completed).length
+  const failed = p.contracts.length - done
   return sum([
     { label: 'OP track (scored in-game)', op: p.trackOP },
     { label: `Progress cubes (${p.progressCubes})`, op: progressOP(p.progressCubes) },
@@ -120,7 +143,7 @@ export function scorePlayer(p: PlayerScoreInput): ScoreBreakdown {
     { label: `Ships in Hangar (${p.ships} × ${OP_PER_SHIP})`, op: p.ships * OP_PER_SHIP },
     { label: 'Advanced Buildings − unbuilt Blueprints', op: advanced },
     { label: 'Scientists (3 OP × matching Advanced Buildings)', op: scientistsOP(p.scientists, p.board) },
-    { label: 'Earth Contracts (net ±)', op: p.contractsOP },
+    { label: `Earth Contracts (${done} ✓, ${failed} ✗)`, op: playerContractsOP(p.contracts) },
     { label: 'Colonists (highest Living Quarters slot)', op: p.colonistsOP },
   ])
 }

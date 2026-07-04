@@ -369,6 +369,23 @@ button.icon-btn {
   margin: 0;
 }
 
+/* Tri-state contract chips + Living Quarters value picker */
+button.chip.pick {
+  cursor: pointer;
+}
+
+button.chip.pick.on {
+  color: var(--ink);
+  border-color: var(--teal);
+  background: rgba(63, 201, 185, 0.14);
+}
+
+button.chip.pick.off {
+  color: var(--ink);
+  border-color: var(--rust);
+  background: rgba(212, 85, 42, 0.16);
+}
+
 .scorecard {
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid var(--line);

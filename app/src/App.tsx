@@ -5,6 +5,7 @@ import { BLUEPRINTS } from './data/blueprints'
 import { MISSIONS } from './data/missions'
 import { SCIENTISTS } from './data/scientists'
 import { SOLO_GOALS } from './data/soloGoals'
+import { CONTRACTS } from './data/contracts'
 import type { BuildingType, MissionSlot, ScientistId } from './data/types'
 import { LSS_SEQUENCE } from './data/types'
 import type { GameState } from './engine/game'
@@ -24,7 +25,7 @@ import {
   toggleGoalRequirement,
 } from './engine/game'
 import type { BoardCounts } from './engine/scoring'
-import { EMPTY_BOARD, scoreLacerda, scorePlayer, verdict } from './engine/scoring'
+import { EMPTY_BOARD, LIVING_QUARTERS_OP, scoreLacerda, scorePlayer, verdict } from './engine/scoring'
 import type { ScoreBreakdown } from './engine/scoring'
 import type { Step } from './engine/turn'
 import { BUILDING_LABEL } from './engine/turn'
@@ -221,6 +222,8 @@ type Dialog =
   | 'ambiguity'
   | 'report'
 
+type ContractMark = 'completed' | 'failed'
+
 interface ReportInputs {
   lTrack: number
   lTech: number
@@ -233,7 +236,7 @@ interface ReportInputs {
   pB3: number
   pU1: number
   pU3: number
-  pContracts: number
+  pContracts: Record<number, ContractMark>
   pColonists: number
   pScientists: ScientistId[]
   board: BoardCounts
@@ -251,10 +254,25 @@ const EMPTY_REPORT: ReportInputs = {
   pB3: 0,
   pU1: 0,
   pU3: 0,
-  pContracts: 0,
+  pContracts: {},
   pColonists: 0,
   pScientists: [],
   board: EMPTY_BOARD,
+}
+
+const RESOURCE_LABEL: Record<string, string> = {
+  mineral: 'Minerals',
+  battery: 'Batteries',
+  water: 'Water',
+  plant: 'Plants',
+  oxygen: 'Oxygen',
+}
+
+function contractLabel(c: (typeof CONTRACTS)[number]): string {
+  if (c.type === 'upgrade') return `${BUILDING_LABEL[c.building]} complex ≥ 4`
+  const parts = Object.entries(c.requires.resources).map(([r, n]) => `${n} ${RESOURCE_LABEL[r]}`)
+  if (c.requires.crystals) parts.unshift(`${c.requires.crystals} Crystals`)
+  return parts.join(' + ')
 }
 
 export default function App() {
@@ -541,8 +559,43 @@ export default function App() {
                   <Num label="Built L3 Blueprints" value={report.pB3} onChange={(n) => setReport({ ...report, pB3: n })} />
                   <Num label="Unbuilt L1 Blueprints" value={report.pU1} onChange={(n) => setReport({ ...report, pU1: n })} />
                   <Num label="Unbuilt L3 Blueprints" value={report.pU3} onChange={(n) => setReport({ ...report, pU3: n })} />
-                  <Num label="Contracts OP (net ±)" value={report.pContracts} onChange={(n) => setReport({ ...report, pContracts: n })} />
-                  <Num label="Colonists OP (0–21)" value={report.pColonists} onChange={(n) => setReport({ ...report, pColonists: n })} />
+                </div>
+                <h3>Colonists</h3>
+                <p className="hint">Tap the number printed next to your highest Colonist in the Living Quarters.</p>
+                <div className="chips">
+                  {LIVING_QUARTERS_OP.map((v) => (
+                    <button
+                      key={v}
+                      className={report.pColonists === v ? 'chip pick on' : 'chip pick'}
+                      onClick={() => setReport({ ...report, pColonists: v })}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+                <h3>Your Earth Contracts</h3>
+                <p className="hint">Tap a Contract you hold to cycle: not yours → completed ✓ → failed ✗.</p>
+                <div className="chips">
+                  {CONTRACTS.map((c) => {
+                    const mark = report.pContracts[c.id]
+                    const next: ContractMark | undefined =
+                      mark === undefined ? 'completed' : mark === 'completed' ? 'failed' : undefined
+                    return (
+                      <button
+                        key={c.id}
+                        className={`chip pick ${mark === 'completed' ? 'on' : mark === 'failed' ? 'off' : ''}`}
+                        onClick={() => {
+                          const pContracts = { ...report.pContracts }
+                          if (next === undefined) delete pContracts[c.id]
+                          else pContracts[c.id] = next
+                          setReport({ ...report, pContracts })
+                        }}
+                      >
+                        {mark === 'completed' ? '✓ ' : mark === 'failed' ? '✗ ' : ''}#{c.id} {contractLabel(c)} (
+                        {mark === 'failed' ? c.opFailed : `+${c.opComplete}`})
+                      </button>
+                    )
+                  })}
                 </div>
                 <h3>Your Scientists</h3>
                 <div className="chips">
@@ -584,7 +637,10 @@ export default function App() {
                 unbuiltL1: report.pU1,
                 unbuiltL3: report.pU3,
                 scientists: report.pScientists,
-                contractsOP: report.pContracts,
+                contracts: Object.entries(report.pContracts).map(([id, mark]) => ({
+                  id: Number(id),
+                  completed: mark === 'completed',
+                })),
                 colonistsOP: report.pColonists,
                 board: report.board,
               })

@@ -37,7 +37,11 @@ test.describe('README screenshots', () => {
     await numInput('Progress cubes (0–5)', 1).fill('4')
     await numInput('Ships in Hangar', 0).fill('2')
     await numInput('Built L1 Blueprints', 0).fill('2')
-    await numInput('Colonists OP (0–21)', 0).fill('10')
+    await page.getByRole('button', { name: '10', exact: true }).click()
+    await page.getByRole('button', { name: /#4 Greenhouse complex/ }).click()
+    const water = page.getByRole('button', { name: /#9 3 Water \+ 2 Minerals/ })
+    await water.click()
+    await water.click()
     await page.locator('.verdict').waitFor()
     await page.screenshot({ path: out('report'), fullPage: true })
 
