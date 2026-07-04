@@ -150,7 +150,7 @@ function FooterSmallPrint() {
       </small>
       <small className="footer-meta">
         v{__APP_VERSION__} ·{' '}
-        <a href="https://github.com/ianpogi5/on-mars-solo" target="_blank" rel="noreferrer">
+        <a href="https://github.com/KDC-Solo/on-mars" target="_blank" rel="noreferrer">
           Source &amp; issues on GitHub
         </a>
       </small>

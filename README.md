@@ -8,7 +8,7 @@ Eagle-Gryphon Games). The solo mode is famously exhausting: you play your own he
 priority rules, tie-breaking, crystal accounting, mission tracking — so you only make the
 physical moves on the table and focus on your own game.
 
-**▶ Play it now: [ianpogi5.github.io/on-mars-solo](https://ianpogi5.github.io/on-mars-solo/)**
+**▶ Play it now: [kdc-solo.github.io/on-mars](https://kdc-solo.github.io/on-mars/)**
 — installable as a PWA (Add to Home Screen) and fully offline at the table.
 
 ## What it does

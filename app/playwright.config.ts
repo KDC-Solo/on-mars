@@ -5,11 +5,11 @@ export default defineConfig({
   testDir: 'e2e',
   timeout: 60_000,
   use: {
-    baseURL: 'http://localhost:4299/on-mars-solo/',
+    baseURL: 'http://localhost:4299/on-mars/',
   },
   webServer: {
     command: 'npm run preview -- --port 4299 --strictPort',
-    url: 'http://localhost:4299/on-mars-solo/',
+    url: 'http://localhost:4299/on-mars/',
     reuseExistingServer: !process.env.CI,
   },
 })

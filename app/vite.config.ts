@@ -6,8 +6,8 @@ import pkg from './package.json' with { type: 'json' }
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Served from https://ianpogi5.github.io/on-mars-solo/
-  base: '/on-mars-solo/',
+  // Served from https://kdc-solo.github.io/on-mars/
+  base: '/on-mars/',
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [
     react(),
@@ -20,8 +20,8 @@ export default defineConfig({
         theme_color: '#d4552a',
         background_color: '#07060d',
         display: 'standalone',
-        start_url: '/on-mars-solo/',
-        scope: '/on-mars-solo/',
+        start_url: '/on-mars/',
+        scope: '/on-mars/',
         icons: [],
       },
     }),
