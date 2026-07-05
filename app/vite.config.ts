@@ -6,7 +6,7 @@ import pkg from './package.json' with { type: 'json' }
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Served from https://kdc-solo.github.io/on-mars/
+  // Served from https://solo.kdc.sh/on-mars/
   base: '/on-mars/',
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [
