@@ -158,54 +158,219 @@ function FooterSmallPrint() {
   )
 }
 
+/** Instruction screens of the guided setup (the solo deltas from Rulebook p. 22, paraphrased). */
+const SETUP_GUIDE: { title: string; items: string[] }[] = [
+  {
+    title: 'The table',
+    items: [
+      'Set up On Mars as a standard 2-player game — you take one seat, Lacerda takes the other.',
+      'Give Lacerda a color: player board, Colonists, Rover, Shuttle marker and Bots, placed exactly as for a human opponent.',
+      'Deal the Mission cards to slots A, B and C as usual — you will tell the app which ones landed where in a moment.',
+    ],
+  },
+  {
+    title: 'Lacerda’s corner',
+    items: [
+      'Lacerda gets no Private Goal cards — return his to the box. You keep yours as normal.',
+      'Leave the 12 solo cards in the box: the app is his deck and reveals, discards and reshuffles for you.',
+      'Skip his resource tokens too. The app tracks his Crystals — he starts with 0 and his Depot caps him at 6. His Bots wait on his player board.',
+    ],
+  },
+  {
+    title: 'His Bot on the Mine',
+    items: [
+      'Place one of Lacerda’s Bots on the Mine icon in the Progress area.',
+      'That marker tracks his build sequence — Mine, Generator, Water Extractor, Greenhouse, Oxygen Condenser, then around again. The console header mirrors it as “Bot →”.',
+    ],
+  },
+  {
+    title: 'Turn order & Shuttle',
+    items: [
+      'Shuffle the First Colonist tiles and draw one at random: it sets Lacerda’s starting Turn Order space.',
+      'Place his Shuttle marker on the red space on his side. Lacerda begins the game in Orbit.',
+    ],
+  },
+]
+
 function Setup({ onStart, toggles }: { onStart: (s: GameState) => void; toggles: ReactNode }) {
   const [slots, setSlots] = useState<Record<MissionSlot, number>>({ A: 1, B: 4, C: 8 })
   const [goal, setGoal] = useState(SOLO_GOALS[0].id)
+  /** 0 = quick one-screen setup; 1..totalSteps = guided walkthrough. */
+  const [step, setStep] = useState(0)
+
+  const missionStep = SETUP_GUIDE.length + 1
+  const goalStep = SETUP_GUIDE.length + 2
+  const totalSteps = SETUP_GUIDE.length + 3
 
   const valid = new Set(Object.values(slots)).size === 3
+  const goalCard = SOLO_GOALS.find((x) => x.id === goal)!
+  const start = () => onStart(newGame({ seed: Date.now() >>> 0, missions: slots, soloGoalId: goal }))
+  const go = (n: number) => {
+    setStep(n)
+    cues.tick()
+  }
+
+  const missionSelects = (['A', 'B', 'C'] as const).map((slot) => (
+    <label key={slot}>
+      Mission {slot}
+      <select
+        value={slots[slot]}
+        onChange={(e) => setSlots({ ...slots, [slot]: Number(e.target.value) })}
+      >
+        {MISSIONS.map((m) => (
+          <option key={m.id} value={m.id}>
+            {m.name} — {m.required.p2}× · +{m.rewardCrystals} Crystal
+          </option>
+        ))}
+      </select>
+    </label>
+  ))
+
+  if (step === 0) {
+    return (
+      <div className="panel setup">
+        <Brand sub="MISSION BRIEFING" right={toggles} />
+        <h1>On Mars Solo — Setup</h1>
+        <p className="hint">
+          First game against the bot, or want a checklist? The walkthrough covers every solo
+          setup difference one screen at a time.
+        </p>
+        <button className="big" onClick={() => go(1)}>
+          Guided setup
+        </button>
+        <h3>Quick setup</h3>
+        <p className="hint">
+          Set up a 2-player game. Lacerda gets no Private Goals; his Bot starts on the Mine icon in
+          the Progress area. Shuffle the First Colonist tiles for his starting Turn Order space; the
+          Shuttle starts on the red space on his side.
+        </p>
+        {missionSelects}
+        <label>
+          Solo Goal
+          <select value={goal} onChange={(e) => setGoal(e.target.value as typeof goal)}>
+            {SOLO_GOALS.map((x) => (
+              <option key={x.id} value={x.id}>
+                {x.name} ({x.level})
+              </option>
+            ))}
+          </select>
+        </label>
+        {!valid && <p className="warn">Pick three different Missions.</p>}
+        <button className="big" disabled={!valid} onClick={start}>
+          Start game
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="panel setup">
       <Brand sub="MISSION BRIEFING" right={toggles} />
       <h1>On Mars Solo — Setup</h1>
-      <p className="hint">
-        Set up a 2-player game. Lacerda gets no Private Goals; his Bot starts on the Mine icon in
-        the Progress area. Shuffle the First Colonist tiles for his starting Turn Order space; the
-        Shuttle starts on the red space on his side.
+      <p className="wizard-progress">
+        Guided setup · step {step} of {totalSteps}
       </p>
-      {(['A', 'B', 'C'] as const).map((slot) => (
-        <label key={slot}>
-          Mission {slot}
-          <select
-            value={slots[slot]}
-            onChange={(e) => setSlots({ ...slots, [slot]: Number(e.target.value) })}
-          >
-            {MISSIONS.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name} — {m.required.p2}× · +{m.rewardCrystals} Crystal
-              </option>
+
+      {step <= SETUP_GUIDE.length && (
+        <>
+          <h2>{SETUP_GUIDE[step - 1].title}</h2>
+          <ol className="steps">
+            {SETUP_GUIDE[step - 1].items.map((text) => (
+              <li key={text}>{text}</li>
             ))}
-          </select>
-        </label>
-      ))}
-      <label>
-        Solo Goal
-        <select value={goal} onChange={(e) => setGoal(e.target.value as typeof goal)}>
-          {SOLO_GOALS.map((x) => (
-            <option key={x.id} value={x.id}>
-              {x.name} ({x.level})
-            </option>
-          ))}
-        </select>
-      </label>
-      {!valid && <p className="warn">Pick three different Missions.</p>}
-      <button
-        className="big"
-        disabled={!valid}
-        onClick={() => onStart(newGame({ seed: Date.now() >>> 0, missions: slots, soloGoalId: goal }))}
-      >
-        Start game
-      </button>
+          </ol>
+        </>
+      )}
+
+      {step === missionStep && (
+        <>
+          <h2>Missions</h2>
+          <p className="hint">Which Mission card landed in each slot?</p>
+          {missionSelects}
+          {!valid && <p className="warn">Pick three different Missions.</p>}
+        </>
+      )}
+
+      {step === goalStep && (
+        <>
+          <h2>Your Solo Goal</h2>
+          <p className="hint">Pick the Goal you will play against, or let the app deal one.</p>
+          <div className="goal-pick">
+            {SOLO_GOALS.map((x) => (
+              <button
+                key={x.id}
+                className={x.id === goal ? 'on' : undefined}
+                onClick={() => {
+                  setGoal(x.id)
+                  cues.tick()
+                }}
+              >
+                {x.name}
+                <span className="lvl">{x.level}</span>
+              </button>
+            ))}
+          </div>
+          <div className="actions">
+            <button
+              onClick={() => {
+                setGoal(SOLO_GOALS[Math.floor(Math.random() * SOLO_GOALS.length)].id)
+                cues.reveal()
+              }}
+            >
+              🎲 Deal a random Goal
+            </button>
+          </div>
+          <h3>{goalCard.name} — to win you must:</h3>
+          <ul className="goal-reqs">
+            {goalCard.requirements.map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {step === totalSteps && (
+        <>
+          <h2>Launch check</h2>
+          <ul className="review">
+            {(['A', 'B', 'C'] as const).map((slot) => (
+              <li key={slot}>
+                Mission {slot} <b>{MISSIONS.find((m) => m.id === slots[slot])!.name}</b>
+              </li>
+            ))}
+            <li>
+              Solo Goal{' '}
+              <b>
+                {goalCard.name} ({goalCard.level})
+              </b>
+            </li>
+          </ul>
+          <p className="hint">
+            Lacerda starts in Orbit with 0 of 6 Crystals and his Bot on the Mine — the console
+            header should match after launch. Undo is always one tap away.
+          </p>
+        </>
+      )}
+
+      <div className="actions">
+        <button onClick={() => go(step - 1)}>← Back</button>
+        {step < totalSteps ? (
+          <button className="big" disabled={step === missionStep && !valid} onClick={() => go(step + 1)}>
+            Next →
+          </button>
+        ) : (
+          <button
+            className="big"
+            disabled={!valid}
+            onClick={() => {
+              start()
+              cues.done()
+            }}
+          >
+            Start game
+          </button>
+        )}
+      </div>
     </div>
   )
 }

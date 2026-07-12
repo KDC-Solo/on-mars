@@ -13,6 +13,10 @@ physical moves on the table and focus on your own game.
 
 ## What it does
 
+- **Guided setup** — a step-by-step walkthrough of the solo setup differences (no Private
+  Goals for Lacerda, his Bot on the Mine icon, First Colonist turn-order draw, Shuttle
+  start), ending with your Mission slots and Solo Goal — dealt at random if you like. A
+  one-screen quick setup remains for veterans.
 - **Runs Lacerda's turns** — reveals a virtual solo card and walks you through his action
   with one imperative instruction at a time; every screen has a universal
   "Not possible → Rover" fallback for illegal moves.
@@ -35,17 +39,21 @@ physical moves on the table and focus on your own game.
 
 ## Screenshots
 
-| Setup | Lacerda's turn |
+| Setup | Guided setup |
 | --- | --- |
-| ![Setup screen](screenshots/setup.png) | ![A turn with instructions and action history](screenshots/turn.png) |
+| ![Setup screen](screenshots/setup.png) | ![Guided setup walkthrough](screenshots/guided.png) |
 
-| One-tap questions | On a phone |
+| Lacerda's turn | One-tap questions |
 | --- | --- |
-| ![Colonist-slot question](screenshots/question.png) | ![Mobile layout](screenshots/mobile.png) |
+| ![A turn with instructions and action history](screenshots/turn.png) | ![Colonist-slot question](screenshots/question.png) |
 
 | Mission Report (final scoring) | Day-side theme |
 | --- | --- |
 | ![Mission report scoring screen](screenshots/report.png) | ![Light theme](screenshots/light.png) |
+
+| On a phone |
+| --- |
+| ![Mobile layout](screenshots/mobile.png) |
 
 ## How it works
 

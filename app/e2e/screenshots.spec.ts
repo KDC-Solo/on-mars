@@ -15,6 +15,14 @@ test.describe('README screenshots', () => {
     await page.getByRole('heading', { name: 'On Mars Solo — Setup' }).waitFor()
     await page.screenshot({ path: out('setup'), fullPage: true })
 
+    // Guided setup walkthrough, on the "His Bot on the Mine" screen.
+    await page.getByRole('button', { name: 'Guided setup' }).click()
+    await page.getByRole('button', { name: 'Next →' }).click()
+    await page.getByRole('button', { name: 'Next →' }).click()
+    await page.locator('.wizard-progress').waitFor()
+    await page.screenshot({ path: out('guided'), fullPage: true })
+    await page.reload()
+
     await page.getByRole('button', { name: 'Start game' }).click()
     await page.getByRole('button', { name: /Lacerda.s turn/ }).click()
     await page.getByRole('heading', { name: /Colonists already/ }).waitFor()

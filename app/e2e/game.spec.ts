@@ -87,6 +87,56 @@ test('full solo game flow: setup, turns, records, phases, undo, resume', async (
   await expect(page.getByRole('heading', { name: 'On Mars Solo — Setup' })).toHaveCount(0)
 })
 
+test('guided setup walks the solo deltas and launches the game', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.getByRole('heading', { name: 'On Mars Solo — Setup' })).toBeVisible()
+  await page.getByRole('button', { name: 'Guided setup' }).click()
+
+  const progress = page.locator('.wizard-progress')
+  const next = page.getByRole('button', { name: 'Next →' })
+
+  // Four instruction screens: table, Lacerda's deltas, Bot on Mine, turn order.
+  await expect(progress).toHaveText(/step 1 of 7/)
+  await expect(page.locator('.steps')).toContainText('2-player game')
+  await next.click()
+  await expect(page.locator('.steps')).toContainText('no Private Goal cards')
+  await next.click()
+  await expect(page.locator('.steps')).toContainText('Mine icon in the Progress area')
+  await next.click()
+  await expect(page.locator('.steps')).toContainText('First Colonist tiles')
+
+  // Back retraces a step; Next returns.
+  await page.getByRole('button', { name: '← Back' }).click()
+  await expect(progress).toHaveText(/step 3 of 7/)
+  await next.click()
+  await next.click()
+
+  // Missions: duplicates block progress until resolved.
+  await expect(progress).toHaveText(/step 5 of 7/)
+  await page.getByLabel('Mission B').selectOption('1')
+  await expect(page.getByText('Pick three different Missions.')).toBeVisible()
+  await expect(next).toBeDisabled()
+  await page.getByLabel('Mission B').selectOption('4')
+  await next.click()
+
+  // Solo Goal: pick a card, requirements preview updates (FR-2).
+  await page.getByRole('button', { name: /Next Generation/ }).click()
+  await expect(page.locator('.goal-reqs')).toContainText('Beat Lacerda by 10 OP or more')
+  await page.getByRole('button', { name: /Deal a random Goal/ }).click()
+  await expect(page.locator('.goal-pick button.on')).toHaveCount(1)
+  await page.getByRole('button', { name: /Next Generation/ }).click()
+  await next.click()
+
+  // Launch check summarizes the selections, then starts the game.
+  await expect(progress).toHaveText(/step 7 of 7/)
+  await expect(page.locator('.review')).toContainText('Next Generation')
+  await page.getByRole('button', { name: 'Start game' }).click()
+  const header = page.locator('header')
+  await expect(header).toContainText('Colony L1')
+  await expect(header).toContainText('Bot → Mine')
+  await expect(page.locator('aside')).toContainText('Next Generation')
+})
+
 test('console toggles: theme persists across reloads, sound button flips', async ({ page }) => {
   await page.goto('./')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')

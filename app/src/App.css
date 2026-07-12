@@ -272,6 +272,92 @@ footer {
   font-weight: 600;
 }
 
+/* --- guided setup wizard --- */
+.wizard-progress {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.setup h2 {
+  margin: 0;
+}
+
+.setup h3 {
+  margin: 0.4rem 0 0;
+}
+
+.goal-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.goal-pick button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: left;
+}
+
+.goal-pick button .lvl {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+.goal-pick button.on {
+  border-color: var(--teal);
+  background: rgba(63, 201, 185, 0.12);
+  box-shadow: 0 0 0 1px rgba(63, 201, 185, 0.25);
+}
+
+.goal-pick button.on .lvl {
+  color: var(--teal);
+}
+
+.goal-reqs {
+  margin: 0.2rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--dim);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.review {
+  list-style: none;
+  margin: 0.2rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.review li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 0.4rem;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+.review li b {
+  color: var(--ink);
+  text-align: right;
+}
+
 :root[data-theme='light'] header {
   background: linear-gradient(168deg, rgba(253, 248, 240, 0.96), rgba(244, 234, 218, 0.96));
 }
